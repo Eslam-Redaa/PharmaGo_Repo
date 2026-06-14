@@ -41,7 +41,7 @@ public class OrderServImp implements OrderServices {
     public AppResponse CreateOrder(OrderRequest request, double userLat, double userLng) {
 
         List<Long> nearbyPharmacyIds = pharmacyService
-                .FindNearbyPharmacies(userLat, userLng, 5)
+                .FindNearbyPharmacies(userLat, userLng, 25)
                 .getPharmacyList()
                 .stream()
                 .map(PharmacyResponse::getId)
