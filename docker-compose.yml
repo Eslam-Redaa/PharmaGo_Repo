@@ -1,0 +1,42 @@
+services:
+
+  mysql:
+    image: mysql:8.4
+    container_name: pharmago-mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 01156515967e
+      MYSQL_DATABASE: pharmago
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    restart: always
+
+  app:
+    build: .
+
+    container_name: pharmago-app
+
+    depends_on:
+      - mysql
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/pharmago
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 01156515967e
+
+      CLOUDINARY_CLOUD_NAME: dnnl0uii5
+      CLOUDINARY_API_KEY: 349823668113129
+      CLOUDINARY_API_SECRET: xRQ4jogz-7yduP_FyGhQuDSxINY
+
+    restart: always
+
+volumes:
+  mysql_data:
