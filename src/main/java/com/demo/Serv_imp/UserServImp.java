@@ -83,14 +83,46 @@ public class UserServImp implements UserServices {
 	//---------------------------------------------------------
 
 	@Override
-	public AppResponse UpdateUser(Long userId, UserRequest request) {
+	public AppResponse UpdateUserName(Long id , String NewName) {
 
-		User user = urepo.findById(userId)
-				.orElseThrow( () -> new ElementNotFoundException("User with Id : "+userId+" -> Not Found"));
+		User user = urepo.findById(id)
+				.orElseThrow( () -> new ElementNotFoundException("User with Id : "+id+" -> Not Found"));
 		
-		user.setName(request.getName());
-		user.setPassword(request.getPassword());
-		user.setPhone(request.getPhone());
+		user.setName(NewName);
+		
+		AppResponse response = new AppResponse();
+		response.setStatusCode(200);
+		response.setSuccessMessage("Name Updated Successfully...");
+		return response;
+	}
+	
+	//---------------------------------------------------------
+	
+	
+	@Override
+	public AppResponse UpdateUserPhone(Long id , String NewPhone) {
+
+		User user = urepo.findById(id)
+				.orElseThrow( () -> new ElementNotFoundException("User with Id : "+id+" -> Not Found"));
+		
+		user.setPhone(NewPhone);
+		
+		AppResponse response = new AppResponse();
+		response.setStatusCode(200);
+		response.setSuccessMessage("User Updated Successfully...");
+		return response;
+	}
+	
+	//---------------------------------------------------------
+	
+	
+	@Override
+	public AppResponse UpdateUserPassword(Long id , String NewPassword) {
+
+		User user = urepo.findById(id)
+				.orElseThrow( () -> new ElementNotFoundException("User with Id : "+id+" -> Not Found"));
+		
+		user.setPassword(NewPassword);
 		
 		AppResponse response = new AppResponse();
 		response.setStatusCode(200);
@@ -101,7 +133,7 @@ public class UserServImp implements UserServices {
 	//---------------------------------------------------------
 	
 	@Override
-	public AppResponse ChangeEmail(Long id , String newEmail) {
+	public AppResponse UpdateUserEmail(Long id , String newEmail) {
 		
 		if(urepo.existsByEmail(newEmail)) {
 			throw new RuntimeException("This Email Already Exist . User Another One!!");

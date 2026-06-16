@@ -46,31 +46,68 @@ public class UserController {
                 .body(response);
     }
 
-    // ================= UPDATE USER =================
-    @PreAuthorize("hasRole('USER')")
+    // ================= UPDATE USER Name =================
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<AppResponse> updateUser(
+    public ResponseEntity<AppResponse> updateUserName(
             @PathVariable Long id,
-            @RequestBody UserRequest request) {
+            @RequestBody String NewName) {
 
-        AppResponse response = userService.UpdateUser(id, request);
+        AppResponse response = userService.UpdateUserName(id, NewName);
 
         return ResponseEntity
                 .status(response.getStatusCode())
                 .body(response);
     }
-
-    // ================= CHANGE EMAIL =================
-    @PreAuthorize("hasRole('USER')")
-    @PutMapping("/{id}/email")
-    public ResponseEntity<AppResponse> changeEmail(
+    
+ // ================= CHANGE EMAIL =================
+    
+    
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<AppResponse> updateUserEmail(
             @PathVariable Long id,
-            @RequestParam String newEmail) {
+            @RequestBody String NewEmail) {
 
-        AppResponse response = userService.ChangeEmail(id, newEmail);
+        AppResponse response = userService.UpdateUserEmail(id, NewEmail);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response);
     }
+    
+ // ================= CHANGE Password =================
+    
+    
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<AppResponse> updateUserPassword(
+            @PathVariable Long id,
+            @RequestBody String NewPassword) {
+
+        AppResponse response = userService.UpdateUserPassword(id, NewPassword);
+
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response);
+    }
+    
+ // ================= CHANGE Phone =================
+    
+    
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<AppResponse> updateUserPhone(
+            @PathVariable Long id,
+            @RequestBody String NewPhone) {
+
+        AppResponse response = userService.UpdateUserPhone(id, NewPhone);
+
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response);
+    }
+    
 
     // ================= DELETE USER =================
     @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")

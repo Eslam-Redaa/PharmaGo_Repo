@@ -10,9 +10,13 @@ public interface UserServices {
 	
 	public AppResponse AddUser(UserRequest request); 
 	
-	public AppResponse UpdateUser(Long id , UserRequest request);
+	public AppResponse UpdateUserName(Long id , String NewName);
 	
-	public AppResponse ChangeEmail(Long id , String newEmail);
+	public AppResponse UpdateUserPhone(Long id , String NewPhone);
+	
+	public AppResponse UpdateUserPassword(Long id , String NewPassword);
+	
+	public AppResponse UpdateUserEmail(Long id , String newEmail);
 	
 	public AppResponse DeleteUser(Long id);
 	
