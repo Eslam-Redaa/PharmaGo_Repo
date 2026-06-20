@@ -3,6 +3,7 @@ package com.demo.Controllers;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public class InventoryController {
     private InventoryServImp inventoryService;
 
     // ================= ADD MEDICINE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @PostMapping
     public ResponseEntity<AppResponse> addMedicine(
             @RequestBody InventoryRequest request
@@ -39,6 +41,7 @@ public class InventoryController {
     }
 
     // ================= UPDATE INVENTORY =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @PutMapping
     public ResponseEntity<AppResponse> updateInventory(
             @RequestBody InventoryRequest request
@@ -52,6 +55,7 @@ public class InventoryController {
     }
 
     // ================= DELETE INVENTORY =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @DeleteMapping
     public ResponseEntity<AppResponse> deleteInventory(
             @RequestParam Long pharmacyId,
@@ -66,6 +70,7 @@ public class InventoryController {
     }
 
     // ================= GET INVENTORY =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @GetMapping
     public ResponseEntity<AppResponse> getInventory(
             @RequestParam Long pharmacyId,
@@ -80,6 +85,7 @@ public class InventoryController {
     }
 
     // ================= CHECK AVAILABILITY =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/check")
     public ResponseEntity<Boolean> checkAvailability(
             @RequestParam Long pharmacyId,

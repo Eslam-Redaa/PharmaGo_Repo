@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class OrderRequest {
 
 	private Long userId;
-	//private Long pharmacyId;
+	private double userLat;
+	private double userLong;
+	
 	private List<OrderItemRequest> orderItems;
 }

@@ -185,7 +185,7 @@ public class AppUtils {
 	
 	public Order ConvertOrderToEntity(OrderRequest request) {
 		return Order.builder()
-				.status(OrderStatus.PENDING)
+				.status(OrderStatus.PENDING.toString())
 				.createdAt(Timestamp.valueOf(LocalDateTime.now()))
 				.user( urepo.findById(request.getUserId())
 						.orElseThrow( () -> new ElementNotFoundException("User with this id : " + request.getUserId() + " -> not found") ) )

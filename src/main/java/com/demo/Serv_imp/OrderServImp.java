@@ -1,12 +1,16 @@
 package com.demo.Serv_imp;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.demo.Entities.Order;
 import com.demo.Entities.OrderItem;
+import com.demo.Entities.Pharmacy;
 import com.demo.Enums.OrderStatus;
+import com.demo.Exceptions.ElementNotFoundException;
 import com.demo.IO.AppResponse;
 import com.demo.IO.InventoryRequest;
 import com.demo.IO.OrderItemRequest;
@@ -38,10 +42,10 @@ public class OrderServImp implements OrderServices {
     private OrderRepository orderRepo;
 
     @Override
-    public AppResponse CreateOrder(OrderRequest request, double userLat, double userLng) {
+    public AppResponse CreateOrder(OrderRequest request) {
 
         List<Long> nearbyPharmacyIds = pharmacyService
-                .FindNearbyPharmacies(userLat, userLng, 25)
+                .FindNearbyPharmacies(request.getUserLat(), request.getUserLong(), 25)
                 .getPharmacyList()
                 .stream()
                 .map(PharmacyResponse::getId)
@@ -71,12 +75,15 @@ public class OrderServImp implements OrderServices {
 
         updateInventoryAfterOrder(selectedPharmacyId, request.getOrderItems());
 
-        utils.sendEmail(order.getUser().getEmail() , "Order Created",
-        							"Your order has been created successfully");
+        //utils.sendEmail(order.getUser().getEmail() , "Order Created",
+        						//	"Your order has been created successfully");
         
         AppResponse response = new AppResponse();
         response.setStatusCode(HttpStatus.CREATED.value());
-        response.setSuccessMessage("Order created successfully");
+        response.setSuccessMessage("Order created successfully"
+        		+ "-   OrderId : " + order.getId()
+        		+ "-   PharmacyId : " + selectedPharmacyId);
+        
         return response;
     }
     
@@ -93,19 +100,19 @@ public class OrderServImp implements OrderServices {
             throw new RuntimeException("You are not allowed to cancel this order");
         }
 
-        if (order.getStatus() != OrderStatus.PENDING) {
+        if ( !order.getStatus().equals(OrderStatus.PENDING.toString()) ) {
             throw new RuntimeException("Only pending orders can be cancelled");
         }
 
         restoreInventory(order);
 
-        order.setStatus(OrderStatus.CANCELLED);
+        order.setStatus(OrderStatus.CANCELLED.toString());
 
         orderRepo.save(order);
 
         AppResponse response = new AppResponse();
         response.setStatusCode(HttpStatus.CREATED.value());
-        response.setSuccessMessage("Order created successfully");
+        response.setSuccessMessage("Order Cancelled successfully");
         return response;
     }
 
@@ -207,13 +214,13 @@ public class OrderServImp implements OrderServices {
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        if (order.getStatus() != OrderStatus.PENDING) {
+        if ( !order.getStatus().equals(OrderStatus.PENDING.toString()) ) {
             throw new RuntimeException(
                     "Only pending orders can be confirmed"
             );
         }
 
-        order.setStatus(OrderStatus.CONFIRMED);
+        order.setStatus(OrderStatus.CONFIRMED.toString());
 
         orderRepo.save(order);
 
@@ -231,7 +238,7 @@ public class OrderServImp implements OrderServices {
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        if (order.getStatus() != OrderStatus.PENDING) {
+        if ( !order.getStatus().equals(OrderStatus.PENDING.toString()) ) {
             throw new RuntimeException(
                     "Only pending orders can be rejected"
             );
@@ -239,7 +246,7 @@ public class OrderServImp implements OrderServices {
 
         restoreInventory(order);
 
-        order.setStatus(OrderStatus.REJECTED);
+        order.setStatus(OrderStatus.REJECTED.toString());
 
         orderRepo.save(order);
 
@@ -248,6 +255,29 @@ public class OrderServImp implements OrderServices {
         response.setSuccessMessage("Order rejected successfully");
         return response;
     }
+
+	@Override
+	public AppResponse GetOrderById(Long orderId) {
+
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow( () -> new ElementNotFoundException("Order with Id ( " + orderId + " ) Not Found"));
+		
+		AppResponse response = new AppResponse();
+		response.setStatusCode(200);
+		response.setOrder( utils.ConvertOrderToResponse(order) );
+		return response;
+	}
+
+	@Override
+	public AppResponse GetAllOrders() {
+		
+		AppResponse response = new AppResponse();
+		response.setStatusCode(200);
+		response.setOrderList( orderRepo.findAll().stream()
+				.map( ord -> utils.ConvertOrderToResponse(ord))
+				.collect(Collectors.toList()));
+		return response;
+	}
 
   
 }

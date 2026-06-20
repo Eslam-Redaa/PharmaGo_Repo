@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +32,7 @@ public class MedicineController {
     private MedicineServImp medicineService;
 
     // ================= ADD MEDICINE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @PostMapping("/add")
     public ResponseEntity<AppResponse> addMedicine(
     			@ModelAttribute ("request") MedicineRequest request,
@@ -41,6 +43,7 @@ public class MedicineController {
     }
 
     // ================= UPDATE MEDICINE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @PutMapping("/{id}")
     public ResponseEntity<AppResponse> updateMedicine(
             @PathVariable Long id,
@@ -51,6 +54,7 @@ public class MedicineController {
     }
 
     // ================= DELETE MEDICINE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @DeleteMapping("/{id}")
     public ResponseEntity<AppResponse> deleteMedicine(@PathVariable Long id) {
         AppResponse response = medicineService.deleteMedicine(id);
@@ -58,6 +62,7 @@ public class MedicineController {
     }
 
     // ================= GET ALL =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping
     public ResponseEntity<AppResponse> getAllMedicines() {
         AppResponse response = medicineService.getAllMedicines();
@@ -65,6 +70,7 @@ public class MedicineController {
     }
 
     // ================= GET BY ID =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @GetMapping("/{id}")
     public ResponseEntity<AppResponse> getMedicineById(@PathVariable Long id) {
         AppResponse response = medicineService.getMedicineById(id);
@@ -72,6 +78,7 @@ public class MedicineController {
     }
 
     // ================= SEARCH BY NAME =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/search")
     public ResponseEntity<AppResponse> searchByName(@RequestParam String name) {
         AppResponse response = medicineService.getMedicinesByName(name);
@@ -79,6 +86,7 @@ public class MedicineController {
     }
 
     // ================= SEARCH BY CATEGORY =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/category")
     public ResponseEntity<AppResponse> searchByCategory(@RequestParam String category) {
         AppResponse response = medicineService.searchByCategory(category);
@@ -86,6 +94,7 @@ public class MedicineController {
     }
 
     // ================= MEDICINES IN PHARMACY =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/pharmacy/{pharmacyId}")
     public ResponseEntity<AppResponse> getMedicinesInPharmacy(@PathVariable Long pharmacyId) {
         AppResponse response = medicineService.GetMedicinesInPharmacy(pharmacyId);
@@ -107,6 +116,7 @@ public class MedicineController {
     }
 
     // ================= CHANGE IMAGE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @PutMapping("/{id}/image")
     public ResponseEntity<AppResponse> changeImage(
             @PathVariable Long id,
@@ -118,12 +128,14 @@ public class MedicineController {
 
 
     // ================= GET CATEGORIES =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/categories")
     public ResponseEntity<List<String>> getCategories() {
         return ResponseEntity.ok(medicineService.getCategoriesList());
     }
 
     // ================= AUTOCOMPLETE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/autocomplete")
     public ResponseEntity<List<String>> autocomplete(@RequestParam String prefix) {
         return ResponseEntity.ok(medicineService.findTop7ByNameStartingWith(prefix));

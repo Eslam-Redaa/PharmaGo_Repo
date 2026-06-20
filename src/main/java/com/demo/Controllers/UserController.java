@@ -48,7 +48,7 @@ public class UserController {
 
     // ================= UPDATE USER Name =================
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/updateName/{id}")
     public ResponseEntity<AppResponse> updateUserName(
             @PathVariable Long id,
             @RequestBody String NewName) {
@@ -64,7 +64,7 @@ public class UserController {
     
     
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/updateEmail/{id}")
     public ResponseEntity<AppResponse> updateUserEmail(
             @PathVariable Long id,
             @RequestBody String NewEmail) {
@@ -80,7 +80,7 @@ public class UserController {
     
     
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/updatePassword/{id}")
     public ResponseEntity<AppResponse> updateUserPassword(
             @PathVariable Long id,
             @RequestBody String NewPassword) {
@@ -96,7 +96,7 @@ public class UserController {
     
     
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/updatephone/{id}")
     public ResponseEntity<AppResponse> updateUserPhone(
             @PathVariable Long id,
             @RequestBody String NewPhone) {

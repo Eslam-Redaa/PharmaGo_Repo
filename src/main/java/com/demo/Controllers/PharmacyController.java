@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,6 +32,7 @@ public class PharmacyController {
     private PharmacyServImp pharmacyService;
 
     // ================= CREATE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<AppResponse> createPharmacy(
             @ModelAttribute ("request") PharmacyRequest request,
@@ -45,6 +47,7 @@ public class PharmacyController {
     }
 
     // ================= GET ALL =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping
     public ResponseEntity<AppResponse> getAllPharmacies() {
 
@@ -56,6 +59,7 @@ public class PharmacyController {
     }
 
     // ================= GET BY ID =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @GetMapping("/{id}")
     public ResponseEntity<AppResponse> getPharmacyById(@PathVariable Long id) {
 
@@ -67,6 +71,7 @@ public class PharmacyController {
     }
 
     // ================= UPDATE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @PutMapping("/{id}")
     public ResponseEntity<AppResponse> updatePharmacy(
             @PathVariable Long id,
@@ -81,6 +86,7 @@ public class PharmacyController {
     }
 
     // ================= DELETE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @DeleteMapping("/{id}")
     public ResponseEntity<AppResponse> deletePharmacy(@PathVariable Long id) {
 
@@ -92,6 +98,7 @@ public class PharmacyController {
     }
 
     // ================= OWNER =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @GetMapping("/{id}/owner")
     public ResponseEntity<AppResponse> getPharmacyOwner(@PathVariable Long id) {
 
@@ -103,6 +110,7 @@ public class PharmacyController {
     }
 
     // ================= ORDERS =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/{id}/orders")
     public ResponseEntity<AppResponse> getPharmacyOrders(@PathVariable Long id) {
 
@@ -114,6 +122,7 @@ public class PharmacyController {
     }
 
     // ================= NEARBY =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/nearby")
     public ResponseEntity<AppResponse> findNearbyPharmacies(
             @RequestParam double lat,
@@ -129,6 +138,7 @@ public class PharmacyController {
     }
 
     // ================= NEARBY MEDICINE =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @GetMapping("/nearby/medicine")
     public ResponseEntity<AppResponse> findNearbyPharmaciesForMedicine(
             @RequestParam double lat,
@@ -146,6 +156,7 @@ public class PharmacyController {
     }
 
     // ================= LOW STOCK =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @GetMapping("/{id}/low-stock")
     public ResponseEntity<AppResponse> getLowStockAlerts(@PathVariable Long id) {
 
@@ -157,6 +168,7 @@ public class PharmacyController {
     }
 
     // ================= DAILY SALES =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
     @GetMapping("/{id}/sales")
     public ResponseEntity<AppResponse> getDailySales(
             @PathVariable Long id,

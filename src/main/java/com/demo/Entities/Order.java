@@ -51,8 +51,7 @@ public class Order {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderItem> orderItems;
 	
-	@Enumerated(EnumType.STRING)
-	private OrderStatus status;
+	private String status;
 	
 	private double totalPrice;
 	

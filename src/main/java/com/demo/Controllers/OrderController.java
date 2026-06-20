@@ -2,6 +2,8 @@ package com.demo.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,14 +24,13 @@ public class OrderController {
     private OrderServImp orderService;
 
     // ================= CREATE ORDER =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
     @PostMapping
     public ResponseEntity<AppResponse> createOrder(
-            @RequestBody OrderRequest request,
-            @RequestParam double lat,
-            @RequestParam double lng
+            @RequestBody OrderRequest request
     ) {
 
-        AppResponse response = orderService.CreateOrder(request, lat, lng);
+        AppResponse response = orderService.CreateOrder(request);
 
         return ResponseEntity
                 .status(response.getStatusCode())
@@ -37,9 +38,10 @@ public class OrderController {
     }
 
     // ================= CANCEL ORDER =================
-    @PutMapping("/{orderId}/cancel")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
+    @PutMapping("/cancel")
     public ResponseEntity<AppResponse> cancelOrder(
-            @PathVariable Long orderId,
+    			@RequestParam Long orderId,
             @RequestParam Long userId
     ) {
 
@@ -51,8 +53,9 @@ public class OrderController {
     }
     
     // ================= CONFIRME ORDER =================
-    @PutMapping("/confirm/{orderId}")
-    public ResponseEntity<AppResponse> confirmOrder(  @PathVariable Long orderId){
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
+    @PutMapping("/confirm")
+    public ResponseEntity<AppResponse> confirmOrder( @RequestParam Long orderId){
 
         return ResponseEntity.ok(
                 orderService.confirmOrder(orderId)
@@ -60,8 +63,9 @@ public class OrderController {
     }
     
     	// ================= REJECT ORDER =================
-    @PutMapping("/reject/{orderId}")
-    public ResponseEntity<AppResponse> rejectOrder( @PathVariable Long orderId ){
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
+    @PutMapping("/reject")
+    public ResponseEntity<AppResponse> rejectOrder( @RequestParam Long orderId ){
 
         return ResponseEntity.ok(
                 orderService.rejectOrder(orderId)
@@ -69,4 +73,25 @@ public class OrderController {
     }
     
     
+	// ================= FIND ORDER BY ID =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY', 'USER')")
+    @GetMapping("/{orderId}")
+    public ResponseEntity<AppResponse> getOrderById(
+            @PathVariable Long orderId) {
+
+        return ResponseEntity.ok(
+        		orderService.GetOrderById(orderId)
+        );
+    }
+    
+    
+	// ================= FIND ALL ORDERS =================
+    @PreAuthorize("hasAnyRole('ADMIN', 'PHARMACY')")
+    @GetMapping("/all")
+    public ResponseEntity<AppResponse> getAllOrders() {
+
+        return ResponseEntity.ok(
+        		orderService.GetAllOrders()
+        );
+    }
 }
